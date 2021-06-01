@@ -61,4 +61,4 @@ jobs:
           context: .
           file: .Dockerfile
           push: true
-          tags: ghcr.io/$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')/maizzle-api:${{ env.IMAGE_TAG }}
+          tags: ghcr.io/garagist/maizzle-api:${{ env.IMAGE_TAG }}
