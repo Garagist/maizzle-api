@@ -59,6 +59,6 @@ jobs:
           IMAGE_TAG: latest
         with:
           context: .
-          file: .Dockerfile
+          file: Dockerfile
           push: true
           tags: ghcr.io/garagist/maizzle-api:${{ env.IMAGE_TAG }}
