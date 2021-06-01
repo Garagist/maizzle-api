@@ -2,10 +2,10 @@
   "name": "maizzle-api",
   "version": "1.0.0",
   "description": "maizzle http api wrapper",
-  "main": "./src/index.js",
+  "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "render": "src/index.js"
+    "start": "node src/index.js"
   },
   "author": "David Spiola",
   "license": "MIT",
