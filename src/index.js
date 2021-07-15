@@ -30,7 +30,7 @@ const server = http.createServer((req, res) => {
                             width: ["IMG"],
                         },
                     },
-                    prettify: true,
+                    prettify: false,
                     removeUnusedCSS: true,
                     extraAttributes: {
                         table: {
