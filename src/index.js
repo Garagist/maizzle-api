@@ -1,28 +1,26 @@
-import Output from '@maizzle/framework/src/generators/output/index.js';
-import http from 'http'
+import Output from "@maizzle/framework/src/generators/output/index.js";
+import http from "http";
 
-const hostname = '0.0.0.0';
+const hostname = "0.0.0.0";
 const port = 3000;
 
 const server = http.createServer((req, res) => {
-    if("POST" === req.method)
-    {
-        let postData = '';
+    if ("POST" === req.method) {
+        let postData = "";
 
         // Get all post data when receive data event.
-        req.on('data', function (chunk) {
+        req.on("data", function (chunk) {
             postData += chunk;
         });
 
         // When all request post data has been received.
-        req.on('end', function () {
-
+        req.on("end", function () {
             const options = {
                 maizzle: {
                     build: {
                         tailwind: {
                             css: false,
-                        }
+                        },
                     },
                     inlineCSS: {
                         mergeLonghand: true,
@@ -39,17 +37,16 @@ const server = http.createServer((req, res) => {
                             cellspacing: 0,
                             role: "presentation",
                         },
-                    }
-                }
-            }
+                    },
+                },
+            };
 
-            Output.toString(postData.toString(),options).then((r) => {
+            Output.toString(postData.toString(), options).then((r) => {
                 res.statusCode = 200;
                 res.setHeader("Content-Type", "text/html");
                 res.end(r.html);
-            })
-
-        })
+            });
+        });
     }
 });
 
