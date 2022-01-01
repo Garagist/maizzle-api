@@ -10,6 +10,6 @@
   "author": "David Spiola",
   "license": "MIT",
   "devDependencies": {
-    "@maizzle/framework": "^3.6.0"
+    "@maizzle/framework": "^3.7.2"
   }
 }
