@@ -1,0 +1,70 @@
+name: Delete old packages
+
+on: workflow_dispatch
+
+env:
+  IMAGE_NAME: neos
+  # can be personal or organization
+  ACCOUNT_TYPE: organization
+
+jobs:
+  params:
+    # Make environment variables available to the rest of the workflow
+    name: Set environment variables
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install jq
+        run: pip install jq
+      - id: env-vars
+        name: Output environment variables
+        run: echo "::set-output name=params::$(echo $(jq -n 'env'))"
+      - name: Lowercase repository
+        uses: ASzc/change-string-case-action@v2
+        id: repository
+        with:
+          string: ${{ github.repository }}
+      - name: Lowercase repository name
+        uses: ASzc/change-string-case-action@v2
+        id: repository_name
+        with:
+          string: ${{ github.event.repository.name }}
+      - name: Lowercase repository owner
+        uses: ASzc/change-string-case-action@v2
+        id: repository_owner
+        with:
+          string: ${{ github.repository_owner }}
+    outputs:
+      repository: ${{ steps.repository.outputs.lowercase }}
+      repository_owner: ${{ steps.repository_owner.outputs.lowercase }}
+      repository_name: ${{ steps.repository_name.outputs.lowercase }}
+      params: ${{ steps.env-vars.outputs.params }}
+      delete_packages: ${{ steps.delete_packages.outputs.defined }}
+  deleteOldPackages:
+    needs:
+      - params
+    name: Delete old packages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete containers older than one week
+        if: ${{ env.ACCOUNT_TYPE == 'personal' }}
+        uses: snok/container-retention-policy@v1
+        with:
+          image-names: ${{ needs.params.outputs.repository_name }}/${{ fromJson(needs.params.outputs.params).IMAGE_NAME }}
+          cut-off: One week ago UTC
+          timestamp-to-use: updated_at
+          account-type: personal
+          keep-at-least: 5
+          skip-tags: latest
+          token: ${{ secrets.READ_AND_DELETE_PACKAGES_TOKEN }}
+      - name: Delete containers older than one week
+        if: ${{ env.ACCOUNT_TYPE == 'organization' }}
+        uses: snok/container-retention-policy@v1
+        with:
+          image-names: ${{ needs.params.outputs.repository_name }}/${{ fromJson(needs.params.outputs.params).IMAGE_NAME }}
+          cut-off: One week ago UTC
+          timestamp-to-use: updated_at
+          account-type: org
+          org-name: ${{ needs.params.outputs.repository_owner }}
+          keep-at-least: 5
+          skip-tags: latest
+          token: ${{ secrets.READ_AND_DELETE_PACKAGES_TOKEN }}
