@@ -3,7 +3,6 @@ name: Delete old packages
 on: workflow_dispatch
 
 env:
-  IMAGE_NAME: neos
   # can be personal or organization
   ACCOUNT_TYPE: organization
 
@@ -49,7 +48,7 @@ jobs:
         if: ${{ env.ACCOUNT_TYPE == 'personal' }}
         uses: snok/container-retention-policy@v1
         with:
-          image-names: ${{ needs.params.outputs.repository_name }}/${{ fromJson(needs.params.outputs.params).IMAGE_NAME }}
+          image-names: ${{ needs.params.outputs.repository_name }}
           cut-off: One week ago UTC
           timestamp-to-use: updated_at
           account-type: personal
@@ -60,7 +59,7 @@ jobs:
         if: ${{ env.ACCOUNT_TYPE == 'organization' }}
         uses: snok/container-retention-policy@v1
         with:
-          image-names: ${{ needs.params.outputs.repository_name }}/${{ fromJson(needs.params.outputs.params).IMAGE_NAME }}
+          image-names: ${{ needs.params.outputs.repository_name }}
           cut-off: One week ago UTC
           timestamp-to-use: updated_at
           account-type: org
